@@ -1,0 +1,25 @@
+(in-package #:org.shirakumo.raster)
+
+(defun fill-rectangle (x y w h buffer bw bh &key fill)
+  (let ((color (ensure-fill fill)))
+    (declare (dynamic-extent color))
+    (composite-sdf color (constantly 0f0) w h buffer bw bh :tx x :ty y)))
+
+(defun fill-ellipse (x y w h buffer bw bh &key fill)
+  (let ((color (ensure-fill fill)))
+    (declare (dynamic-extent color))
+    (composite-sdf color (ellipse (/ w 2) (/ h 2) w h) w h buffer bw bh :tx x :ty y)))
+
+(defun outline-rectangle (x y w h s buffer bw bh &key fill)
+  (let ((color (ensure-fill fill)))
+    (declare (dynamic-extent color))
+    (composite-sdf color (subtract (rectangle (/ w 2) (/ h 2) w h)
+                                   (rectangle (/ w 2) (/ h 2) (- w s) (- h s)))
+                   w h buffer bw bh :tx x :ty y)))
+
+(defun outline-ellipse (x y w h s buffer bw bh &key fill)
+  (let ((color (ensure-fill fill)))
+    (declare (dynamic-extent color))
+    (composite-sdf color (subtract (ellipse (/ w 2) (/ h 2) w h)
+                                   (ellipse (/ w 2) (/ h 2) (- w s) (- h s)))
+                   w h buffer bw bh :tx x :ty y)))
