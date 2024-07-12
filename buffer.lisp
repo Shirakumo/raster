@@ -24,14 +24,6 @@
     (fill buffer color)
     buffer))
 
-(declaim (inline alpha-blend))
-(declaim (ftype (function (channel channel channel) channel) alpha-blend))
-(defun alpha-blend (src dst alpha)
-  (declare (type (unsigned-byte 8) src dst alpha))
-  ;; Simple source-over compositing, using r = (src_r * a) + (dst_r * (1-a))
-  ;; but with integer arithmetic.
-  (truncate (+ (* src alpha) (* dst (- 255 alpha))) 255))
-
 (declaim (inline encode-color))
 (declaim (ftype (function (channel channel channel &optional channel) color) encode-color))
 (defun encode-color (b g r &optional (a 255))

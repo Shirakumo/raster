@@ -99,4 +99,5 @@
        (declare (ignore x y))
        sampler))
     (null
-     (ensure-sampler (encode-color 0 0 0)))))
+     (load-time-value
+      (ensure-sampler (encode-color 0 0 0))))))

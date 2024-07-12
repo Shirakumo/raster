@@ -1,5 +1,13 @@
 (in-package #:org.shirakumo.raster)
 
+(declaim (inline alpha-blend))
+(declaim (ftype (function (channel channel channel) channel) alpha-blend))
+(defun alpha-blend (src dst alpha)
+  (declare (type (unsigned-byte 8) src dst alpha))
+  ;; Simple source-over compositing, using r = (src_r * a) + (dst_r * (1-a))
+  ;; but with integer arithmetic.
+  (truncate (+ (* src alpha) (* dst (- 255 alpha))) 255))
+
 (defmacro do-composite ((j i ti si) (sx sy sw sh sc tx ty tw th tc w h) &body body)
   (let ((rows (gensym "ROWS"))
         (cols (gensym "COLS")))

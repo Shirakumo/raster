@@ -9,7 +9,7 @@
   :source-control (:git "https://github.com/shirakumo/raster.git")
   :serial T
   :components ((:file "package")
-               (:file "protocol")
+               (:file "buffer")
                (:file "sampler")
                (:file "sdf")
                (:file "composite")
