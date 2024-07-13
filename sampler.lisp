@@ -3,12 +3,12 @@
 (deftype sampler ()
   '(function (index index) color))
 
-(defun sampler (buffer w h &key (border 0) (wrapping :clamp))
+(defun sampler (buffer w h &key (border 0) (wrapping :clamp) (x 0) (y 0))
   (declare (type buffer buffer))
-  (declare (type index w h))
-  (lambda (x y)
-    (declare (type index x y))
-    (color-ref* buffer x y w h :wrapping wrapping :border border)))
+  (declare (type index w h x y))
+  (lambda (nx ny)
+    (declare (type index nx ny))
+    (color-ref* buffer (- nx x) (- ny y) w h :wrapping wrapping :border border)))
 
 (defun solid-color (r g b &optional (a 255))
   (let ((c (encode-color r g b a)))
@@ -98,6 +98,8 @@
      (lambda (x y)
        (declare (ignore x y))
        sampler))
+    (image
+     (sampler (image-buffer sampler) (image-width sampler) (image-height sampler) :wrapping :repeat))
     (null
      (load-time-value
       (ensure-sampler (encode-color 0 0 0))))))

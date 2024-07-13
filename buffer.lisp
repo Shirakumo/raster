@@ -12,6 +12,28 @@
 (deftype index ()
   '(unsigned-byte 32))
 
+(declaim (inline %make-image))
+(defstruct (image
+            (:constructor %make-image (width height buffer))
+            (:copier NIL)
+            (:predicate NIL))
+  (buffer NIL :type buffer)
+  (width index)
+  (height index))
+
+(declaim (inline make-image))
+(defun make-image (w h &optional buffer)
+  (check-type w index)
+  (check-type h index)
+  (let ((buffer (etypecase buffer
+                  (buffer
+                   buffer)
+                  (vector
+                   (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-contents buffer))
+                  (null
+                   (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-element 0)))))
+    (%make-image w h buffer)))
+
 (defun clear (buffer &optional (color :black))
   (declare (type buffer buffer))
   (let ((color (ecase color
