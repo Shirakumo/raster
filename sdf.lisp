@@ -1,12 +1,5 @@
 (in-package #:org.shirakumo.raster)
 
-(deftype coordinate ()
-  'single-float)
-
-(declaim (inline coordinate))
-(defun coordinate (x)
-  (float x 0f0))
-
 (deftype sdf ()
   '(function (single-float single-float) single-float))
 

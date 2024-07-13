@@ -44,12 +44,12 @@ See COLOR-REF*")
   (function color-ref*
     "Accesses a single pixel in a color buffer with border handling.
 
-WRAPPING defines how to deal with coordinates that lie outside of the
+BORDER defines how to deal with coordinates that lie outside of the
 buffer region. It can be one of the following:
 
   :CLAMP   --- Accesses the nearest pixel on the border of the buffer.
   :REPEAT  --- Wraps the coordinate around.
-  :BORDER  --- Returns the BORDER color instead.
+  COLOR    --- Returns the BORDER color instead.
 
 When setting this place, :BORDER and :CLAMP do not modify anything
 when the pixel lies outside the buffer.

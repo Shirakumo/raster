@@ -16,18 +16,6 @@
       (declare (ignore x y))
       c)))
 
-(declaim (inline lerp-color))
-(declaim (ftype (function (color color (single-float 0.0 1.0)) color) lerp-color))
-(defun lerp-color (a b x)
-  (declare (type (single-float 0.0 1.0) x))
-  (declare (type color a b))
-  (flet ((lerp (a b)
-           (declare (type channel a b))
-           (round (+ a (* (- b a) x)))))
-    (multiple-value-bind (ab ag ar aa) (decode-color a)
-      (multiple-value-bind (bb bg br ba) (decode-color b)
-        (encode-color (lerp ab bb) (lerp ag bg) (lerp ar br) (lerp aa ba))))))
-
 (declaim (inline evaluate-gradient))
 (defun evaluate-gradient (stops i)
   (declare (type single-float i))
