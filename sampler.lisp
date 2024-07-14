@@ -168,14 +168,16 @@
 (declaim (inline ensure-sampler))
 (defun ensure-sampler (sampler)
   (etypecase sampler
-    (sampler
+    (function
      sampler)
     (color
      (lambda (x y)
        (declare (ignore x y))
        sampler))
     (image
-     (sampler (image-buffer sampler) (image-width sampler) (image-height sampler) :wrapping :repeat))
+     (sampler (image-buffer sampler) (image-width sampler) (image-height sampler) :border :repeat))
     (null
      (load-time-value
-      (ensure-sampler (encode-color 0 0 0))))))
+      (lambda (x y)
+        (declare (ignore x y))
+        (encode-color 0 0 0))))))

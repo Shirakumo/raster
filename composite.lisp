@@ -47,14 +47,15 @@
           (setf (aref target (+ 2 ti i)) (alpha-blend (ldb (byte 8 24) color) (aref target (+ 2 ti i)) alpha))
           (setf (aref target (+ 3 ti i)) (alpha-blend 255 (aref target (+ 3 ti i)) alpha)))))))
 
-(defun composite-sdf (sampler sdf sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh))
+(defun composite-sdf (sampler sdf sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh) (feather 0))
   (declare (type buffer target))
   (declare (type sampler sampler))
   (declare (type sdf sdf))
   (do-composite (j i ti si) (sx sy sw sh 1 tx ty tw th 4 w h)
     (let ((sdf (funcall sdf (coordinate i) (coordinate j))))
-      ;; FIXME: we can be much smarter here to find the edge based on the SDF value and its neighbourhood
-      ;; FIXME: anti-alias edges by computing extra edge alpha
+      ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
+      ;; TODO: anti-alias edges by computing extra edge alpha
+      ;; TODO: implement edge feathering
       (when (<= sdf 0)
         (let* ((color (funcall sampler i j))
                (alpha (ldb (byte 8 24) color)))
