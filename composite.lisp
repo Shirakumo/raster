@@ -25,7 +25,12 @@
                   (incf ,ti (* ,sc ,tw))
                   (incf ,si (* ,tc ,sw)))))))
 
-(defun composite (source sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh))
+(defun blit-buffer (source sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh))
+  (declare (type buffer source target))
+  (do-composite (j i ti si) (sx sy sw sh 4 tx ty tw th 4 w h)
+    (setf (nibbles:ub32ref/le target ti) (nibbles:ub32ref/le source si))))
+
+(defun composite-buffer (source sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh))
   (declare (type buffer source target))
   (do-composite (j i ti si) (sx sy sw sh 4 tx ty tw th 4 w h)
     (let ((alpha (aref source (+ 3 si i))))

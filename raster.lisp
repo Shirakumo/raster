@@ -65,8 +65,8 @@
                    :tx (- x- lw) :ty (- y- lw) :feather feather)))
 
 (defun draw-image (image x y buffer bw bh &key)
-  (composite (image-buffer image) (image-width image) (image-height image)
-             buffer bw bh :tx x :ty y))
+  (composite-buffer (image-buffer image) (image-width image) (image-height image)
+                    buffer bw bh :tx x :ty y))
 
 (defun draw-text (string font buffer &key size sampler valign halign direction wrap markup feather)
   ;; TODO: implement draw-text

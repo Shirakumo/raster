@@ -201,5 +201,5 @@
   (lambda (nx ny)
     (declare (type coordinate nx ny))
     (funcall sdf
-             (round (+ (* (aref mat 0) nx) (* (aref mat 1) ny) (aref mat 2)))
-             (round (+ (* (aref mat 3) nx) (* (aref mat 4) ny) (aref mat 5) )))))
+             (+ (* (aref mat 0) nx) (* (aref mat 1) ny) (aref mat 2))
+             (+ (* (aref mat 3) nx) (* (aref mat 4) ny) (aref mat 5) ))))
