@@ -51,15 +51,25 @@
   (declare (type buffer target))
   (declare (type sampler sampler))
   (declare (type sdf sdf))
-  (do-composite (j i ti si) (sx sy sw sh 1 tx ty tw th 4 w h)
-    (let ((sdf (funcall sdf (coordinate i) (coordinate j))))
-      ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
-      ;; TODO: anti-alias edges by computing extra edge alpha
-      ;; TODO: implement edge feathering
-      (when (<= sdf 0)
-        (let* ((color (funcall sampler i j))
-               (alpha (ldb (byte 8 24) color)))
-          (setf (aref target (+ 0 ti i)) (alpha-blend (ldb (byte 8  0) color) (aref target (+ 0 ti i)) alpha))
-          (setf (aref target (+ 1 ti i)) (alpha-blend (ldb (byte 8 16) color) (aref target (+ 1 ti i)) alpha))
-          (setf (aref target (+ 2 ti i)) (alpha-blend (ldb (byte 8 24) color) (aref target (+ 2 ti i)) alpha))
-          (setf (aref target (+ 3 ti i)) (alpha-blend 255 (aref target (+ 3 ti i)) alpha)))))))
+  (let ((feather (float feather 0f0)))
+    ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
+    (do-composite (j i ti si) (sx sy sw sh 1 tx ty tw th 4 w h)
+      (let* ((x (coordinate i)) (y (coordinate j))
+             (sdf-0 (funcall sdf x y))
+             ;; Compute local derivative
+             (sdf-x- (funcall sdf (- x 1) y))
+             (sdf-x+ (funcall sdf (+ x 1) y))
+             (sdf-y- (funcall sdf x (- y 1)))
+             (sdf-y+ (funcall sdf x (+ y 1)))
+             (dsdf (+ (abs (- sdf-x- sdf-x+)) (abs (- sdf-y- sdf-y+))))
+             ;; Compute smooth alpha value
+             (dsdf (* 0.5 dsdf (1+ feather)))
+             (sdf (clamp (/ (- sdf-0 dsdf) (* dsdf -2)) 0f0 1f0))
+             (sdf (* sdf sdf (- 3 (* 2 sdf)))))
+        (when (<= sdf 0)
+          (let* ((color (funcall sampler i j))
+                 (alpha (round (* sdf 255 (ldb (byte 8 24) color)))))
+            (setf (aref target (+ 0 ti i)) (alpha-blend (ldb (byte 8  0) color) (aref target (+ 0 ti i)) alpha))
+            (setf (aref target (+ 1 ti i)) (alpha-blend (ldb (byte 8 16) color) (aref target (+ 1 ti i)) alpha))
+            (setf (aref target (+ 2 ti i)) (alpha-blend (ldb (byte 8 24) color) (aref target (+ 2 ti i)) alpha))
+            (setf (aref target (+ 3 ti i)) (alpha-blend 255 (aref target (+ 3 ti i)) alpha))))))))

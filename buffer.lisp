@@ -33,13 +33,15 @@
   (check-type w index)
   (check-type h index)
   (let ((buffer (etypecase buffer
-                  (buffer
-                   buffer)
-                  (vector
-                   (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-contents buffer))
-                  (null
-                   (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-element 0)))))
+                  (buffer buffer)
+                  (vector (make-buffer w h buffer))
+                  (null (make-buffer w h)))))
     (%make-image w h buffer)))
+
+(defun make-buffer (w h &optional contents)
+  (if contents
+      (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-contents contents)
+      (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-element 0)))
 
 (defun clear (buffer &optional (color :black))
   (declare (type buffer buffer))
