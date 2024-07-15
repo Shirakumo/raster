@@ -104,8 +104,14 @@
              (ly (- nay (* h bay))))
         (- (sqrt (+ (* lx lx) (* ly ly))) thick)))))
 
-(defun bezier (ax ay bx by &key (thickness 1f0))
-  )
+(defun bezier (ax ay wx wy vx vy bx by &key (thickness 1f0))
+  (let* ((ax (coordinate ax)) (ay (coordinate ay))
+         (bx (coordinate bx)) (by (coordinate by))
+         (vx (coordinate vx)) (vy (coordinate vy))
+         (wx (coordinate wx)) (wy (coordinate wy))
+         (thick (coordinate thickness)))
+    (with-sdf ()
+      )))
 
 (defun polygon (points)
   (let* ((v (make-array (length points) :element-type 'single-float))
