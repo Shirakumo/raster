@@ -18,11 +18,11 @@
     (composite-sdf sampler sdf (+ w lw lw) (+ h lw lw) buffer bw bh
                    :tx (- ax lw) :ty (- ay lw) :feather feather)))
 
-(defun draw-lines (points buffer bw bh &key sampler (line-width 1) line-style join-style cap-style feather)
+(defun draw-lines (points buffer bw bh &key sampler (line-width 1) feather line-style join-style cap-style)
   ;; TODO: implement draw-lines
   )
 
-(defun draw-curves (points buffer bw bh &key sampler (line-width 1) line-style join-style cap-style feather)
+(defun draw-curves (points buffer bw bh &key sampler (line-width 1) feather line-style join-style cap-style)
   ;; TODO: implement draw-curves
   )
 
@@ -67,7 +67,3 @@
 (defun draw-image (image x y buffer bw bh &key)
   (composite-buffer (image-buffer image) (image-width image) (image-height image)
                     buffer bw bh :tx x :ty y))
-
-(defun draw-text (string font buffer &key size sampler valign halign direction wrap markup feather)
-  ;; TODO: implement draw-text
-  )
