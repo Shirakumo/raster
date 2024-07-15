@@ -3,6 +3,14 @@
 (deftype sampler ()
   '(function (index index) color))
 
+(deftype transform ()
+  '(simple-array single-float (6)))
+
+(defun make-transform (&rest args)
+  (map-into (make-array 6 :element-type 'single-float)
+            (lambda (x) (float x 0f0))
+            (or args '(1 0 0 0 1 0))))
+
 (defun bilinear (bl br tl tr x y)
   (declare (type color bl br tl tr))
   (declare (type (single-float 0.0 1.0) x y))
@@ -73,7 +81,7 @@
   (declare (type buffer buffer))
   (declare (type index w h))
   (etypecase transform
-    ((simple-array single-float (6))
+    (transform
      (etypecase border
        ((eql :repeat)
         (lambda (nx ny)

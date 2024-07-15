@@ -82,7 +82,7 @@
   (setf (nibbles:ub32ref/le buffer i) value))
 
 (declaim (inline color-ref*))
-(declaim (ftype (function (buffer index index index index &key (:border color) (:wrapping (member :repeat :clamp :border))) color) color-ref*))
+(declaim (ftype (function (buffer index index index index &key (:border (or color (member :repeat :clamp)))) color) color-ref*))
 (defun color-ref* (buffer x y w h &key (border :clamp))
   (declare (type index x y w h))
   (ecase border
@@ -99,7 +99,7 @@
   (color-ref buffer (+ x (* y w))))
 
 (declaim (inline (setf color-ref*)))
-(declaim (ftype (function (color buffer index index index index &key (:border color) (:wrapping (member :repeat :clamp :border))) color) (setf color-ref*)))
+(declaim (ftype (function (color buffer index index index index &key (:border (or color (member :repeat :clamp)))) color) (setf color-ref*)))
 (defun (setf color-ref*) (color buffer x y w h &key (border :clamp))
   (declare (type index x y w h))
   (ecase border
