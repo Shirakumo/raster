@@ -16,8 +16,42 @@ We'll assume the package ``org.shirakumo.raster`` is nicknamed to ``raster``. Yo
 
 This will return the completed ``image`` into which the shapes were drawn. Please see the respective functions for all available options.
 
-## Compositing
-TODO: write
+## Compositing and Sampling
+Most ``draw-*`` calls are relatively simple wrappers over ``composite-sdf``. Sometimes though it can be too expensive to perform raster operations via SDFs. In this case you may want to either draw pixels directly yourself via ``color-ref`` and ``color-ref*``, or at least handle the compositing of different buffers and samplers.
+
+``blit-buffer`` simply copies pixels from one buffer's sub-region to another. It does not perform interpolation, so it can't stretch or squash the image.
+
+``composite-buffer`` composites the pixels from one buffer onto another with basic "source-over" alpha blending applied. This is typically how two images are combined.
+
+``composite-mask`` does the same but using an arbitrary ``sampler`` and an alpha mask to determine which pixels to draw to.
+
+``composite-sdf`` finally is the same as ``composite-mask`` but instead of using an explicit mask, it relies on an ``sdf`` function to provide the mask.
+
+A ``sampler`` is a function that simply returns a ``color`` value for a given pixel ``index`` pair. The underlying source can be a constant colour (via ``solid-color``), another image (via ``sampler``), a gradient (via ``radial-gradient``, ``linear-gradient``, ``bilinear-gradient``, ``diamond-gradient``, or ``conical-gradient``), or some other function that computes the colour value to use.
+
+The primary ``sampler`` constructed from an image also allows you to rotate and transform the image arbitrarily. To do this it uses the ``sample-color`` function to access pixels, which performs bilinear interpolation of colours as needed.
 
 ## Signed Distance Fields
-TODO: write
+Most drawing operations happen via Signed Distance Fields. These are functions that represent the distance to an outline as a signed number, positive being outside, negative inside. They are a very convenient representation of shapes, since they can easily be combined together and evaluated to produce blurred and anti-aliased shapes.
+
+This library provides a variety of functions to create ``sdf``s for particular shapes:
+
+- ``rectangle``
+- ``ellipse``
+- ``line``
+- ``curve``
+- ``polygon``
+
+And to combine or manipulate them:
+
+- ``subtract``
+- ``combine``
+- ``intersect``
+- ``outline``
+- ``translate``
+- ``scale``
+- ``rotate``
+- ``skew``
+- ``transform``
+
+While SDFs are extremely convenient in this way, be aware that the more complex the shape, the more expensive it gets to evaluate and thus raster the SDF, so they aren't suitable for everything, especially when performance is crucial.
