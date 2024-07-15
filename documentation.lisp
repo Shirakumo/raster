@@ -500,7 +500,32 @@ rasterisation.
 See BUFFER (type)
 See INDEX (type)
 See IMAGE (type)
-See CLIP"))
+See CLIP")
+
+  (function with-drawing
+    "Convenience macro for drawing to an image.
+
+IMAGE may either be a variable bound to an IMAGE instance, or a list
+of arguments to pass to MAKE-IMAGE. For instance, in order to draw to
+a buffer, you may use (WIDTH HEIGHT BUFFER) for the IMAGE. Either way,
+the IMAGE instance is returned at the end.
+
+Within BODY the DRAW-* functions act the same as documented, except
+that the BUFFER, BW, and BH arguments cannot be passed and are instead
+filled in for you by the values of the IMAGE.
+
+This makes it a lot more convenient to perform a sequence of draw
+operations on a buffer.
+
+See IMAGE (type)
+See DRAW-LINE
+See DRAW-CURVE
+See DRAW-LINES
+See DRAW-CURVES
+See DRAW-RECTANGLE
+See DRAW-ELLIPSE
+See DRAW-POLYGON
+See DRAW-IMAGE"))
 
 ;; sampler.lisp
 (docs:define-docs

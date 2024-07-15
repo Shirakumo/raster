@@ -41,7 +41,8 @@
    #:draw-rectangle
    #:draw-ellipse
    #:draw-polygon
-   #:draw-image)
+   #:draw-image
+   #:with-drawing)
   ;; sampler.lisp
   (:export
    #:sampler
