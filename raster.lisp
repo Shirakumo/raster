@@ -1,6 +1,11 @@
 (in-package #:org.shirakumo.raster)
 
-(defvar *clip-stack* (list (with-sdf () 0f0)))
+(declaim (ftype (function (coordinate coordinate) single-float) no-clip))
+(defun no-clip (nx ny)
+  (declare (ignore nx ny))
+  0f0)
+
+(defvar *clip-stack* (list #'no-clip))
 
 (defun clip (sdf)
   (intersect (first *clip-stack*) sdf))
@@ -22,6 +27,10 @@
 
 (defmacro with-rect-clip ((x y w h) &body body)
   `(with-clip (rectangle ,x ,y ,w ,h)
+     ,@body))
+
+(defmacro with-no-clipping (&body body)
+  `(let ((*clip-stack* (list #'no-clip)))
      ,@body))
 
 (defun draw-line (ax ay bx by buffer bw bh &key sampler (line-width 1) feather)
@@ -80,15 +89,16 @@
     (when line-width
       (setf sdf (outline sdf lw)))
     (loop for i from 2 below (length points) by 2
-          for x = (aref points (+ 0 i))
-          for y = (aref points (+ 1 i))
+          for x = (elt points (+ 0 i))
+          for y = (elt points (+ 1 i))
           do (setf x- (min x- x)) (setf x+ (max x+ x))
              (setf y- (min y- y)) (setf y+ (max y+ y)))
     (composite-sdf sampler (clip sdf) (+ (- x+ x-) lw lw) (+ (- y+ y-) lw lw) buffer bw bh
                    :sx (- x- lw) :sy (- y- lw)
                    :tx (- x- lw) :ty (- y- lw) :feather feather)))
 
-(defun draw-image (image x y buffer bw bh &key)
-  ;; FIXME: clip?
-  (composite-buffer (image-buffer image) (image-width image) (image-height image)
-                    buffer bw bh :tx x :ty y))
+(defun draw-image (image x y buffer bw bh &key transform)
+  ;; FIXME: Pretty sure this does not interact correctly between TRANSFORM and CLIP and so on besides being horribly inefficient.
+  (let ((sampler (sampler (image-buffer image) (image-width image) (image-height image) :transform transform)))
+    (composite-sdf sampler (first *clip-stack*) (image-width image) (image-height image) buffer bw bh
+                   :tx x :ty y)))

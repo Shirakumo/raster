@@ -104,7 +104,7 @@
              (ly (- nay (* h bay))))
         (- (sqrt (+ (* lx lx) (* ly ly))) thick)))))
 
-(defun bezier (ax ay wx wy vx vy bx by &key (thickness 1f0))
+(defun curve (ax ay wx wy vx vy bx by &key (thickness 1f0))
   (let* ((ax (coordinate ax)) (ay (coordinate ay))
          (bx (coordinate bx)) (by (coordinate by))
          (vx (coordinate vx)) (vy (coordinate vy))

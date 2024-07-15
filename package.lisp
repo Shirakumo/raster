@@ -33,6 +33,7 @@
    #:pop-clip
    #:with-clip
    #:with-rect-clip
+   #:with-no-clipping
    #:draw-line
    #:draw-curve
    #:draw-lines
@@ -44,6 +45,8 @@
   ;; sampler.lisp
   (:export
    #:sampler
+   #:transform
+   #:make-transform
    #:sample-color
    #:sampler
    #:solid-color
@@ -60,7 +63,7 @@
    #:rectangle
    #:ellipse
    #:line
-   #:bezier
+   #:curve
    #:polygon
    #:subtract
    #:combine

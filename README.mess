@@ -1,0 +1,11 @@
+# About Raster
+This is a portable software rasterisation library. It implements many primitives to perform drawing operations in software onto a portable and ubiquitous format: 8-bit RGBA pixel buffers.
+
+## Basic Operation
+TODO: write
+
+## Compositing
+TODO: write
+
+## Signed Distance Fields
+TODO: write
