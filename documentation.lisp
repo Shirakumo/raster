@@ -202,6 +202,8 @@ W and H should be the width and height of the region to transfer.
 If any part of the source or target region should be out of bounds,
 the operation is truncated to only transfer valid pixels.
 
+If the SOURCE and TARGET are EQ the consequences are undefined.
+
 See BUFFER (type)
 See COMPOSITE-BUFFER")
 
@@ -220,6 +222,8 @@ W and H should be the width and height of the region to transfer.
 
 If any part of the source or target region should be out of bounds,
 the operation is truncated to only transfer valid pixels.
+
+If the SOURCE and TARGET are EQ the consequences are undefined.
 
 See ALPHA-BLEND
 See BUFFER (type)
@@ -243,6 +247,8 @@ W and H should be the width and height of the region to transfer.
 
 If any part of the source or target region should be out of bounds,
 the operation is truncated to only transfer valid pixels.
+
+If the SAMPLER accesses the TARGET the consequences are undefined.
 
 See ALPHA-BLEND
 See BUFFER (type)
@@ -268,11 +274,12 @@ W and H should be the width and height of the region to transfer.
 If any part of the source or target region should be out of bounds,
 the operation is truncated to only transfer valid pixels.
 
+If the SAMPLER accesses the TARGET the consequences are undefined.
+
 See ALPHA-BLEND
 See BUFFER (type)
 See SDF (type)
 See SAMPLER (type)"))
-
 
 ;; raster.lisp
 (docs:define-docs
@@ -821,4 +828,3 @@ See SDF (type)")
 
 See TRANSFORM (type)
 See SDF (type)"))
-

@@ -2,7 +2,19 @@
 This is a portable software rasterisation library. It implements many primitives to perform drawing operations in software onto a portable and ubiquitous format: 8-bit RGBA pixel buffers.
 
 ## Basic Operation
-TODO: write
+We'll assume the package ``org.shirakumo.raster`` is nicknamed to ``raster``. You can perform simple raster operations with the ``with-drawing`` macro and the draw commands:
+
+:: common lisp
+(raster:with-drawing (800 600)
+  (raster:draw-line 10 10 100 100)
+  (raster:draw-line 10 20 100 100 :sampler (raster:encode-color 255 0 0))
+  (raster:draw-rectangle 400 300 100 100 :sampler (raster:encode-color 0 255 0 128))
+  (raster:draw-ellipse 800 600 200 100 :feather 10)
+  (raster:with-rect-clip (0 0 100 100)
+    (raster:draw-ellipse 100 100 50 50)))
+::
+
+This will return the completed ``image`` into which the shapes were drawn. Please see the respective functions for all available options.
 
 ## Compositing
 TODO: write
