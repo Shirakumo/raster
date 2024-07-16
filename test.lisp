@@ -68,3 +68,15 @@
     (is = 255 (raster:color-ref* buf 2 0 2 2 :border :repeat))
     (is = 0 (raster:color-ref* buf 3 0 2 2 :border :repeat))
     (is = 128 (raster:color-ref* buf 2 0 2 2 :border 128))))
+
+(define-test sample
+  :parent raster
+  (let ((buf (raster:make-buffer 2 2)))
+    (setf (raster:color-ref* buf 0 0 2 2) #xFFFF0000)
+    (setf (raster:color-ref* buf 1 0 2 2) #xFF00FF00)
+    (setf (raster:color-ref* buf 0 1 2 2) #xFF0000FF)
+    (setf (raster:color-ref* buf 1 1 2 2) #xFFFFFFFF)
+    (print buf)
+    (is = #xFFFF0000 (raster:sample-color buf 0 0 2 2))
+    (is = #xFF00FF00 (raster:sample-color buf 1 0 2 2))
+    (is = #xFF808000 (raster:sample-color buf 0.5 0 2 2))))
