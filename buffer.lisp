@@ -78,12 +78,12 @@
 (declaim (inline color-ref))
 (declaim (ftype (function (buffer index) color) color-ref))
 (defun color-ref (buffer i)
-  (nibbles:ub32ref/le buffer i))
+  (nibbles:ub32ref/le buffer (* 4 i)))
 
 (declaim (inline (setf color-ref)))
 (declaim (ftype (function (color buffer index) color) (setf color-ref)))
 (defun (setf color-ref) (value buffer i)
-  (setf (nibbles:ub32ref/le buffer i) value))
+  (setf (nibbles:ub32ref/le buffer (* 4 i)) value))
 
 (declaim (inline color-ref*))
 (declaim (ftype (function (buffer (signed-byte 32) (signed-byte 32) index index &key (:border (or color (member :repeat :clamp)))) color) color-ref*))
@@ -100,18 +100,17 @@
          (color-ref buffer (+ x (* y w)))))))
 
 (declaim (inline (setf color-ref*)))
-(declaim (ftype (function (color buffer index index index index &key (:border (or color (member :repeat :clamp)))) color) (setf color-ref*)))
+(declaim (ftype (function (color buffer (signed-byte 32) (signed-byte 32) index index &key (:border (or color (member :repeat :clamp)))) color) (setf color-ref*)))
 (defun (setf color-ref*) (color buffer x y w h &key (border :clamp))
-  (declare (type index x y w h))
+  (declare (type index w h))
   (ecase border
     (:repeat
-     (setf x (mod x w)
-           y (mod y h)))
+     (setf (color-ref buffer (+ (mod x w) (* (mod y h) w))) color))
     ((:border :clamp)
-     (when (or (< x 0) (< y 0)
-               (<= w x) (<= h y))
-       (return-from color-ref* color))))
-  (setf (color-ref buffer (+ x (* y w))) color))
+     (if (or (< x 0) (< y 0)
+             (<= w x) (<= h y))
+         color
+         (setf (color-ref buffer (+ x (* y w))) color)))))
 
 (declaim (inline lerp-color))
 (declaim (ftype (function (color color (single-float 0.0 1.0)) color) lerp-color))

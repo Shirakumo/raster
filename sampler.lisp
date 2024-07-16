@@ -40,8 +40,8 @@
 (defun sample-color/clamp (buffer x y w h)
   (declare (type index w h))
   (declare (type coordinate x y))
-  (let ((x (max 0 (min x (1- w))))
-        (y (max 0 (min y (1- h)))))
+  (let ((x (max 0f0 (min x (float (1- w) 0f0))))
+        (y (max 0f0 (min y (float (1- h) 0f0)))))
     (multiple-value-bind (x- xt) (floor x)
       (multiple-value-bind (y- yt) (floor y)
         (let ((yl (* y- w)))
@@ -72,10 +72,12 @@
                   (bilinear bl br tl tr xt yt))))))))
 
 (defun sample-color (buffer x y w h &key (border :clamp))
-  (etypecase border
-    ((eql :repeat) (sample-color/repeat buffer x y w h))
-    ((eql :clamp) (sample-color/clamp buffer x y w h))
-    (color (sample-color/border buffer x y w h border))))
+  (let ((x (coordinate x))
+        (y (coordinate y)))
+    (etypecase border
+      ((eql :repeat) (sample-color/repeat buffer x y w h))
+      ((eql :clamp) (sample-color/clamp buffer x y w h))
+      (color (sample-color/border buffer x y w h border)))))
 
 (defun sampler (buffer w h &key (border :clamp) transform)
   (declare (type buffer buffer))
