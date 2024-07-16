@@ -195,54 +195,55 @@
             (* b 0.114f0))))
 
 (defun convert-from-buffer (buffer width height layout &optional target)
-  (unless target
-    (setf target (make-array (* width height (length layout)) :element-type '(unsigned-byte 8))))
-  (macrolet ((with-pixels ((ti r g b a) &body body)
-               `(loop for i from 0 below (* width height)
-                      for ,ti from 0 by (length (symbol-name layout))
-                      do (multiple-value-bind (,r ,g ,b ,a) (decode-color (color-ref buffer i))
-                           (declare (ignorable ,a))
-                           ,@body))))
-    (ecase layout
-      (:r
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) (luminance r g b))))
-      (:ra
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) (luminance r g b))
-         (setf (aref target (+ 1 ti)) a)))
-      (:rgb
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) r)
-         (setf (aref target (+ 1 ti)) g)
-         (setf (aref target (+ 2 ti)) b)))
-      (:bgr
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) b)
-         (setf (aref target (+ 1 ti)) g)
-         (setf (aref target (+ 2 ti)) r)))
-      (:bgra
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) b)
-         (setf (aref target (+ 1 ti)) g)
-         (setf (aref target (+ 2 ti)) r)
-         (setf (aref target (+ 3 ti)) a)))
-      (:rgba
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) r)
-         (setf (aref target (+ 1 ti)) g)
-         (setf (aref target (+ 2 ti)) b)
-         (setf (aref target (+ 3 ti)) a)))
-      (:abgr
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) a)
-         (setf (aref target (+ 1 ti)) b)
-         (setf (aref target (+ 2 ti)) g)
-         (setf (aref target (+ 3 ti)) r)))
-      (:argb
-       (with-pixels (ti r g b a)
-         (setf (aref target (+ 0 ti)) a)
-         (setf (aref target (+ 1 ti)) r)
-         (setf (aref target (+ 2 ti)) g)
-         (setf (aref target (+ 3 ti)) b))))
-    target))
+  (let ((channels (length (symbol-name layout))))
+    (unless target
+      (setf target (make-array (* width height channels) :element-type '(unsigned-byte 8))))
+    (macrolet ((with-pixels ((ti r g b a) &body body)
+                 `(loop for i from 0 below (* width height)
+                        for ,ti from 0 by channels
+                        do (multiple-value-bind (,r ,g ,b ,a) (decode-color (color-ref buffer i))
+                             (declare (ignorable ,a))
+                             ,@body))))
+      (ecase layout
+        (:r
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) (luminance r g b))))
+        (:ra
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) (luminance r g b))
+           (setf (aref target (+ 1 ti)) a)))
+        (:rgb
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) r)
+           (setf (aref target (+ 1 ti)) g)
+           (setf (aref target (+ 2 ti)) b)))
+        (:bgr
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) b)
+           (setf (aref target (+ 1 ti)) g)
+           (setf (aref target (+ 2 ti)) r)))
+        (:bgra
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) b)
+           (setf (aref target (+ 1 ti)) g)
+           (setf (aref target (+ 2 ti)) r)
+           (setf (aref target (+ 3 ti)) a)))
+        (:rgba
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) r)
+           (setf (aref target (+ 1 ti)) g)
+           (setf (aref target (+ 2 ti)) b)
+           (setf (aref target (+ 3 ti)) a)))
+        (:abgr
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) a)
+           (setf (aref target (+ 1 ti)) b)
+           (setf (aref target (+ 2 ti)) g)
+           (setf (aref target (+ 3 ti)) r)))
+        (:argb
+         (with-pixels (ti r g b a)
+           (setf (aref target (+ 0 ti)) a)
+           (setf (aref target (+ 1 ti)) r)
+           (setf (aref target (+ 2 ti)) g)
+           (setf (aref target (+ 3 ti)) b))))
+      target)))

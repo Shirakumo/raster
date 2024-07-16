@@ -3,7 +3,7 @@
 (declaim (ftype (function (coordinate coordinate) single-float) no-clip))
 (defun no-clip (nx ny)
   (declare (ignore nx ny))
-  0f0)
+  most-negative-single-float)
 
 (defvar *clip-stack* (list #'no-clip))
 
@@ -44,8 +44,9 @@
                (y (floor (- y lw)))
                (w (ceiling (+ w lw lw)))
                (h (ceiling (+ h lw lw))))
-           (composite-sdf sampler (clip sdf) w h buffer bw bh
-                          :sx x :sy y :tx x :ty y :feather feather))))))
+           (composite-sdf sampler (clip sdf) (+ y w) (+ y h) buffer bw bh
+                          :sx x :sy y :tx x :ty y :w w :h h
+                          :feather feather))))))
 
 (define-sdf-draw draw-line (ax ay bx by &key (line-width 1))
   (x ax) (y ay) (w (- bx ax)) (h (- by ay))
@@ -57,11 +58,13 @@
 
 (define-sdf-draw draw-rectangle (x y w h &key line-width corner-radii)
   (sdf (rectangle x y w h :corner-radii corner-radii))
-  (sdf (if line-width (outline sdf lw) sdf)))
+  (sdf (if line-width (outline sdf lw) sdf))
+  (x (- x w)) (y (- y h)) (w (* 2 w)) (h (* 2 h)))
 
 (define-sdf-draw draw-ellipse (x y w h &key line-width (start 0) (end (* 2 PI)) (inner-radius 0))
   (sdf (ellipse x y w h :start start :end end :inner-radius inner-radius))
-  (sdf (if line-width (outline sdf lw) sdf)))
+  (sdf (if line-width (outline sdf lw) sdf))
+  (x (- x w)) (y (- y h)) (w (* 2 w)) (h (* 2 h)))
 
 (define-sdf-draw draw-polygon (points &key line-width)
   (sdf (polygon points))

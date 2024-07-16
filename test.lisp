@@ -13,15 +13,28 @@
 
 (defun load-image (file)
   (let* ((image (pngload:load-file file :flatten T))
-         (buffer (raster:convert-buffer (pngload:data image)
-                                        (pngload:width image)
-                                        (pngload:height image)
-                                        (ecase (pngload:color-type image)
-                                          (:greyscale :r)
-                                          (:greyscale-alpha :ra)
-                                          (:truecolour :rgb)
-                                          (:truecolour-alpha :rgba)))))
+         (buffer (raster:convert-to-buffer (pngload:data image)
+                                           (pngload:width image)
+                                           (pngload:height image)
+                                           (ecase (pngload:color-type image)
+                                             (:greyscale :r)
+                                             (:greyscale-alpha :ra)
+                                             (:truecolour :rgb)
+                                             (:truecolour-alpha :rgba)))))
     (raster:make-image (pngload:width image) (pngload:height image) buffer)))
+
+(defun write-buffer (buffer width height file &optional (format :rgba))
+  (let ((buffer (raster:convert-from-buffer buffer width height format)))
+    (zpng:write-png (make-instance 'zpng:png :image-data buffer :width width :height height :color-type
+                                   (ecase format
+                                     (:rgba :truecolor-alpha)
+                                     (:rgb :truecolor)
+                                     (:ra :grayscale-alpha)
+                                     (:r :grayscale)))
+                    file)))
+
+(defun write-image (image file &optional (format :rgba))
+  (write-buffer (raster:image-buffer image) (raster:image-width image) (raster:image-height image) file format))
 
 (define-test raster
   :defun T)

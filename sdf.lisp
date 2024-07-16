@@ -154,9 +154,8 @@
 (defun intersect (a b)
   (declare (type sdf a b))
   (with-sdf ()
-    (let ((a (funcall a nx ny))
-          (b (funcall b nx ny)))
-      (max (min a b) (- (max a b))))))
+    (max (funcall a nx ny)
+         (funcall b nx ny))))
 
 (defun outline (sdf thickness)
   (declare (type sdf sdf))

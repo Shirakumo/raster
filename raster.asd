@@ -30,5 +30,5 @@
   :source-control (:git "https://github.com/shirakumo/raster.git")
   :serial T
   :components ((:file "test"))
-  :depends-on (:raster :parachute :pngload)
+  :depends-on (:raster :parachute :pngload :zpng)
   :perform (asdf:test-op (op c) (uiop:symbol-call :parachute :test :org.shirakumo.raster.test)))

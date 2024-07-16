@@ -59,7 +59,7 @@
   (let ((feather (float (or feather 0) 0f0)))
     ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
     (do-composite (j i ti si) (sx sy sw sh 1 tx ty tw th 4 w h)
-      (let* ((x (coordinate i)) (y (coordinate j))
+      (let* ((x (coordinate j)) (y (coordinate i))
              (sdf-0 (funcall sdf x y))
              ;; Compute local derivative
              (sdf-x- (funcall sdf (- x 1) y))
@@ -69,11 +69,11 @@
              (dsdf (+ (abs (- sdf-x- sdf-x+)) (abs (- sdf-y- sdf-y+))))
              ;; Compute smooth alpha value
              (dsdf (* 0.5 dsdf (1+ feather)))
-             (sdf (clamp (/ (- sdf-0 dsdf) (* dsdf -2)) 0f0 1f0))
+             (sdf (if (/= 0 dsdf) (clamp (/ (- sdf-0 dsdf) (* dsdf -2)) 0f0 1f0) 0f0))
              (sdf (* sdf sdf (- 3 (* 2 sdf)))))
-        (when (<= sdf 0)
+        (when (<= 0 sdf)
           (let* ((color (funcall sampler i j))
-                 (alpha (round (* sdf 255 (ldb (byte 8 24) color)))))
+                 (alpha (round (* (min 1f0 sdf) 255 (ldb (byte 8 24) color)) 255)))
             (setf (aref target (+ 0 ti i)) (alpha-blend (ldb (byte 8  0) color) (aref target (+ 0 ti i)) alpha))
             (setf (aref target (+ 1 ti i)) (alpha-blend (ldb (byte 8 16) color) (aref target (+ 1 ti i)) alpha))
             (setf (aref target (+ 2 ti i)) (alpha-blend (ldb (byte 8 24) color) (aref target (+ 2 ti i)) alpha))
