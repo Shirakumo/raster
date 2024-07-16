@@ -24,8 +24,8 @@
               0f0))))
 
 (defun rectangle (x y w h &key corner-radii)
-  (let ((x (coordinate x)) (y (coordinate y))
-        (w (coordinate w)) (h (coordinate h)))
+  (let* ((w (* 0.5f0 (coordinate w))) (h (* 0.5f0 (coordinate h)))
+         (x (+ (coordinate x) w)) (y (+ (coordinate y) h)))
     (etypecase corner-radii
       (null
        ;; Basic aligned rec case
@@ -55,20 +55,20 @@
                 (- r)))))))))
 
 (defun ellipse (x y w h &key (start 0) (end (* 2 PI)) (inner-radius 0.0))
-  (let* ((x (coordinate x)) (y (coordinate y))
-         (w (/ (coordinate w))) (h (/ (coordinate h)))
-         (inner-radius (/ (coordinate inner-radius)))
-         (start (coordinate start)) (end (coordinate end)))
+  (let* ((w (* 0.5f0 (coordinate w))) (h (* 0.5f0 (coordinate h)))
+         (x (+ (coordinate x) w)) (y (+ (coordinate y) h))
+         (inner-radius (coordinate inner-radius))
+         (start (coordinate start)) (end (coordinate end))
+         (w (/ w)) (h (/ h)))
     (cond ((and (<= inner-radius 0.0) (<= (* 2 PI) (- end start)))
            ;; Cicrle case
            (with-sdf ()
-             (vlen (* (- nx x) w) (* (- ny y) h))))
+             (- (vlen (* (- nx x) w) (* (- ny y) h)) 1)))
           ((<= (* 2 PI) (- end start))
            ;; Ring case
            (with-sdf ()
-             (let ((nx (- nx x))
-                   (ny (- ny y)))
-               (- (vlen (* nx w) (* ny h)) inner-radius))))
+             (+ (- (vlen (* (- nx x) w) (* (- ny y) h)) 1)
+                inner-radius)))
           (T
            ;; General pie ring case
            (let ((start (- start (float (/ PI 2) 0f0)))

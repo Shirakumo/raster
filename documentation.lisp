@@ -781,8 +781,8 @@ See COORDINATE (type)")
   (function rectangle
     "Construct a rectangular SDF.
 
-X and Y should be the centre coordinates of the rectangle.
-W and H should be the half-size dimensions of the rectangle.
+X and Y should be the top left coordinates of the rectangle.
+W and H should be the dimensions of the rectangle.
 
 CORNER-RADII if given should be a sequence of four elements, which
 describe the radii of the corners of the rectangle, with the first
@@ -794,8 +794,8 @@ See SDF (type)")
   (function ellipse
     "Construct an ellipse SDF.
 
-X and Y should be the centre coordinates of the ellipse.
-W and H should be the half-size dimensions of the ellipse.
+X and Y should be the top left coordinates of the ellipse.
+W and H should be the dimensions of the ellipse.
 
 START and END, if given, describe the starting and ending angles of
 the pie that is drawn.

@@ -58,13 +58,11 @@
 
 (define-sdf-draw draw-rectangle (x y w h &key line-width corner-radii)
   (sdf (rectangle x y w h :corner-radii corner-radii))
-  (sdf (if line-width (outline sdf lw) sdf))
-  (x (- x w)) (y (- y h)) (w (* 2 w)) (h (* 2 h)))
+  (sdf (if line-width (outline sdf lw) sdf)))
 
 (define-sdf-draw draw-ellipse (x y w h &key line-width (start 0) (end (* 2 PI)) (inner-radius 0))
   (sdf (ellipse x y w h :start start :end end :inner-radius inner-radius))
-  (sdf (if line-width (outline sdf lw) sdf))
-  (x (- x w)) (y (- y h)) (w (* 2 w)) (h (* 2 h)))
+  (sdf (if line-width (outline sdf lw) sdf)))
 
 (define-sdf-draw draw-polygon (points &key line-width)
   (sdf (polygon points))
