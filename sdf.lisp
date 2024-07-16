@@ -57,20 +57,14 @@
 (defun ellipse (x y w h &key (start 0) (end (* 2 PI)) (inner-radius 0.0))
   (let* ((w (* 0.5f0 (coordinate w))) (h (* 0.5f0 (coordinate h)))
          (x (+ (coordinate x) w)) (y (+ (coordinate y) h))
-         (inner-radius (coordinate inner-radius))
-         (start (coordinate start)) (end (coordinate end))
-         (w (/ w)) (h (/ h)))
-    (cond ((and (<= inner-radius 0.0) (<= (* 2 PI) (- end start)))
-           ;; Cicrle case
-           (with-sdf ()
-             (- (vlen (* (- nx x) w) (* (- ny y) h)) 1)))
-          ((<= (* 2 PI) (- end start))
+         (ir (* 0.5 (/ (- w (coordinate inner-radius)) w)))
+         (start (coordinate start)) (end (coordinate end)))
+    (cond ((and (<= (* 2 PI) (- end start)) (= w h))
            ;; Ring case
            (with-sdf ()
-             (+ (- (vlen (* (- nx x) w) (* (- ny y) h)) 1)
-                inner-radius)))
-          (T
-           ;; General pie ring case
+             (- (abs (+ (- (vlen (- nx x) (- ny y)) w) ir)) ir)))
+          ((= w h)
+           ;; Partial ring case
            (let ((start (- start (float (/ PI 2) 0f0)))
                  (aperture (* (abs (- end start)) 0.5)))
              (when (< end start)
@@ -90,7 +84,12 @@
                           (n (clamp (dot nx ny cx cy) 0.0 0.5))
                           (m (vlen (- nx (* cx n)) (- ny (* cy n))))
                           (sdf (max l (* m (signum (- (* cy nx) (* cx ny)))))))
-                     (- sdf inner-radius))))))))))
+                     (- (abs (+ sdf ir)) ir)))))))
+          ((<= (* 2 PI) (- end start))
+           ;; Ellipse case
+           (with-sdf ()
+             0.0))
+          (T))))
 
 (defun line (ax ay bx by &key (thickness 1f0))
   (let* ((ax (coordinate ax)) (ay (coordinate ay))
