@@ -52,11 +52,11 @@
           (setf (aref target (+ 2 ti i)) (alpha-blend (ldb (byte 8 24) color) (aref target (+ 2 ti i)) alpha))
           (setf (aref target (+ 3 ti i)) (alpha-blend 255 (aref target (+ 3 ti i)) alpha)))))))
 
-(defun composite-sdf (sampler sdf sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh) (feather 0))
+(defun composite-sdf (sampler sdf sw sh target tw th &key (tx 0) (ty 0) (sx 0) (sy 0) (w sw) (h sh) feather)
   (declare (type buffer target))
   (declare (type sampler sampler))
   (declare (type sdf sdf))
-  (let ((feather (float feather 0f0)))
+  (let ((feather (float (or feather 0) 0f0)))
     ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
     (do-composite (j i ti si) (sx sy sw sh 1 tx ty tw th 4 w h)
       (let* ((x (coordinate i)) (y (coordinate j))

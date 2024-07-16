@@ -28,6 +28,10 @@
   (width index)
   (height index))
 
+(defmethod print-object ((image image) stream)
+  (print-unreadable-object (image stream :type T :identity T)
+    (format stream "~dx~d" (image-width image) (image-height image))))
+
 (declaim (inline make-image))
 (defun make-image (w h &optional buffer)
   (assert (<= 1 w (1- (ash 1 30))))
