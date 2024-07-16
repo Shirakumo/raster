@@ -18,7 +18,8 @@
    #:decode-color
    #:color-ref
    #:color-ref*
-   #:lerp-color)
+   #:lerp-color
+   #:convert-buffer)
   ;; composite.lisp
   (:export
    #:alpha-blend

@@ -170,7 +170,33 @@ separately.
 If X is out of range or A or B aren't COLORs the results are
 undefined.
 
-See COLOR (type)"))
+See COLOR (type)")
+
+ (function convert-buffer
+   "Convert an arbitrary pixel buffer to a standard 4-channel BGRA buffer.
+
+If TARGET is not given, a new appropriately sized BUFFER is created
+and returned for you.
+
+BUFFER should hold the pixel data described by the WIDTH, HEIGHT, and
+LAYOUT parameters, with each channel being an (UNSIGNED-BYTE 8).
+
+LAYOUT can be one of:
+
+  :R
+  :RA
+  :RGB
+  :BGR
+  :RGBA
+  :BGRA
+  :ARGB
+  :ABGR
+
+Which descibes the order in which the channels occur within the
+BUFFER.
+
+See CHANNEL (type)
+See BUFFER (type)"))
 
 ;; composite.lisp
 (docs:define-docs

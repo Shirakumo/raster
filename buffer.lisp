@@ -123,3 +123,64 @@
     (multiple-value-bind (ab ag ar aa) (decode-color a)
       (multiple-value-bind (bb bg br ba) (decode-color b)
         (encode-color (lerp ab bb) (lerp ag bg) (lerp ar br) (lerp aa ba))))))
+
+(defun convert-buffer (buffer width height layout &optional target)
+  (unless target
+    (setf target (make-buffer width height)))
+  (macrolet ((with-pixels ((bi ti channels) &body body)
+               `(loop for i from 0 below (* width height)
+                      for ,bi from 0 by ,channels
+                      for ,ti from 0 by 4
+                      do ,@body)))
+    (ecase layout
+      (:r
+       (with-pixels (bi ti 1)
+         (let ((color (aref buffer (+ 0 bi))))
+           (setf (aref target (+ 0 ti)) color)
+           (setf (aref target (+ 1 ti)) color)
+           (setf (aref target (+ 2 ti)) color)
+           (setf (aref target (+ 3 ti)) 255))))
+      (:ra
+       (with-pixels (bi ti 2)
+         (let ((color (aref buffer (+ 0 bi))))
+           (setf (aref target (+ 0 ti)) color)
+           (setf (aref target (+ 1 ti)) color)
+           (setf (aref target (+ 2 ti)) color)
+           (setf (aref target (+ 3 ti)) (aref buffer (+ 1 bi))))))
+      (:rgb
+       (with-pixels (bi ti 3)
+         (setf (aref target (+ 0 ti)) (aref buffer (+ 2 bi)))
+         (setf (aref target (+ 1 ti)) (aref buffer (+ 1 bi)))
+         (setf (aref target (+ 2 ti)) (aref buffer (+ 0 bi)))
+         (setf (aref target (+ 3 ti)) 255)))
+      (:bgr
+       (with-pixels (bi ti 3)
+         (setf (aref target (+ 0 ti)) (aref buffer (+ 0 bi)))
+         (setf (aref target (+ 1 ti)) (aref buffer (+ 1 bi)))
+         (setf (aref target (+ 2 ti)) (aref buffer (+ 2 bi)))
+         (setf (aref target (+ 3 ti)) 255)))
+      (:bgra
+       (with-pixels (bi ti 4)
+         (setf (aref target (+ 0 ti)) (aref buffer (+ 0 bi)))
+         (setf (aref target (+ 1 ti)) (aref buffer (+ 1 bi)))
+         (setf (aref target (+ 2 ti)) (aref buffer (+ 2 bi)))
+         (setf (aref target (+ 3 ti)) (aref buffer (+ 3 bi)))))
+      (:rgba
+       (with-pixels (bi ti 4)
+         (setf (aref target (+ 0 ti)) (aref buffer (+ 2 bi)))
+         (setf (aref target (+ 1 ti)) (aref buffer (+ 1 bi)))
+         (setf (aref target (+ 2 ti)) (aref buffer (+ 0 bi)))
+         (setf (aref target (+ 3 ti)) (aref buffer (+ 3 bi)))))
+      (:abgr
+       (with-pixels (bi ti 4)
+         (setf (aref target (+ 0 ti)) (aref buffer (+ 1 bi)))
+         (setf (aref target (+ 1 ti)) (aref buffer (+ 2 bi)))
+         (setf (aref target (+ 2 ti)) (aref buffer (+ 3 bi)))
+         (setf (aref target (+ 3 ti)) (aref buffer (+ 0 bi)))))
+      (:argb
+       (with-pixels (bi ti 4)
+         (setf (aref target (+ 0 ti)) (aref buffer (+ 3 bi)))
+         (setf (aref target (+ 1 ti)) (aref buffer (+ 2 bi)))
+         (setf (aref target (+ 2 ti)) (aref buffer (+ 1 bi)))
+         (setf (aref target (+ 3 ti)) (aref buffer (+ 0 bi))))))
+    target))
