@@ -30,8 +30,9 @@
 
 (declaim (inline make-image))
 (defun make-image (w h &optional buffer)
-  (check-type w index)
-  (check-type h index)
+  (assert (<= 1 w (1- (ash 1 30))))
+  (assert (<= 1 h (1- (ash 1 30))))
+  (assert (<= 1 (* w h) (1- (ash 1 30))))
   (let ((buffer (etypecase buffer
                   (buffer buffer)
                   (vector (make-buffer w h buffer))
@@ -39,6 +40,9 @@
     (%make-image w h buffer)))
 
 (defun make-buffer (w h &optional contents)
+  (assert (<= 1 w (1- (ash 1 30))))
+  (assert (<= 1 h (1- (ash 1 30))))
+  (assert (<= 1 (* w h) (1- (ash 1 30))))
   (if contents
       (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-contents contents)
       (make-array (* 4 w h) :element-type '(unsigned-byte 8) :initial-element 0)))
@@ -57,7 +61,7 @@
 
 (declaim (inline encode-color))
 (declaim (ftype (function (channel channel channel &optional channel) color) encode-color))
-(defun encode-color (b g r &optional (a 255))
+(defun encode-color (r g b &optional (a 255))
   (+ (ash b  0)
      (ash g  8)
      (ash r 16)
@@ -66,9 +70,9 @@
 (declaim (inline decode-color))
 (declaim (ftype (function (color) (values channel channel channel channel)) decode-color))
 (defun decode-color (c)
-  (values (ldb (byte 8  0) c)
+  (values (ldb (byte 8 16) c)
           (ldb (byte 8  8) c)
-          (ldb (byte 8 16) c)
+          (ldb (byte 8  0) c)
           (ldb (byte 8 24) c)))
 
 (declaim (inline color-ref))

@@ -6,7 +6,7 @@
   (declare (type (unsigned-byte 8) src dst alpha))
   ;; Simple source-over compositing, using r = (src_r * a) + (dst_r * (1-a))
   ;; but with integer arithmetic.
-  (truncate (+ (* src alpha) (* dst (- 255 alpha))) 255))
+  (values (truncate (+ (* src alpha) (* dst (- 255 alpha))) 255)))
 
 (defmacro do-composite ((j i ti si) (sx sy sw sh sc tx ty tw th tc w h) &body body)
   (let ((rows (gensym "ROWS"))

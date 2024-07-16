@@ -96,13 +96,16 @@ shared with the resulting IMAGE instance. Otherwise, a new BUFFER is
 allocated and the contents are copied over.
 
 See IMAGE (type)
-See BUFFER")
+See MAKE-BUFFER
+See BUFFER (type)")
 
   (function make-buffer
     "Creates a fresh pixel buffer.
 
 If CONTENTS is given, it must be a sequence that equals 4*W*H in
 length.
+
+Both width, height, and width*height must be in [1,1073741823].
 
 See BUFFER (type)")
 
@@ -115,12 +118,12 @@ for white, but may be more efficient.
 See BUFFER")
 
  (function encode-color
-   "Encodes a B G R A quadruplet into an (UNSIGNED-BYTE 32) color.
+   "Encodes an R G B A quadruplet into an (UNSIGNED-BYTE 32) color.
 
 See DECODE-COLOR")
 
  (function decode-color
-   "Decodes an (UNSIGNED-BYTE 32) into its B G R A color components.
+   "Decodes an (UNSIGNED-BYTE 32) into its R G B A color components.
 
 See ENCODE-COLOR")
 
