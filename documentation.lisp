@@ -175,7 +175,7 @@ undefined.
 
 See COLOR (type)")
 
- (function convert-buffer
+ (function convert-to-buffer
    "Convert an arbitrary pixel buffer to a standard 4-channel BGRA buffer.
 
 If TARGET is not given, a new appropriately sized BUFFER is created
@@ -197,6 +197,31 @@ LAYOUT can be one of:
 
 Which descibes the order in which the channels occur within the
 BUFFER.
+
+See CHANNEL (type)
+See BUFFER (type)")
+
+ (function convert-from-buffer
+   "Convert a standard 4-channel BGRA buffer to an arbitrary pixel buffer.
+
+If TARGET is not given, a new appropriately sized buffer is created
+and returned for you.
+
+BUFFER should be an appropriately sized BUFFER.
+
+LAYOUT can be one of:
+
+  :R
+  :RA
+  :RGB
+  :BGR
+  :RGBA
+  :BGRA
+  :ARGB
+  :ABGR
+
+Which descibes the order in which the channels occur within the
+TARGET.
 
 See CHANNEL (type)
 See BUFFER (type)"))
