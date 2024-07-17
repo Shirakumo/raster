@@ -70,8 +70,8 @@
     (declare (type index sw sh tx ty tw th w h ti rows cols))
     (loop for j from 0 below rows
           do (loop for i from 0 below cols
-                   do (let* ((x (coordinate (+ j sx ox)))
-                             (y (coordinate (+ i sy oy)))
+                   do (let* ((x (coordinate (+ i sx ox)))
+                             (y (coordinate (+ j sy oy)))
                              (sdf-0 (funcall sdf x y))
                              (dsdf (* 0.5 (dsdf sdf x y) (1+ feather)))
                              (sdf (if (/= 0 dsdf) (clamp (/ (- sdf-0 dsdf) (* dsdf -2)) 0f0 1f0) 0f0))
