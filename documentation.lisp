@@ -340,41 +340,14 @@ See SAMPLER (type)"))
   (function clip
     "Clip the SDF to be within the clipping region only.
 
-See PUSH-CLIP
-See POP-CLIP
 See WITH-CLIP
 See WITH-NO-CLIPPING
 See SDF (type)")
-
-  (function push-clip
-    "Push a clipping SDF onto the stack.
-
-This will only ever //narrow// the clipping region to become the
-intersection of the current clipping region and the newly passed one.
-
-See POP-CLIP
-See CLIP
-See WITH-CLIP
-See WITH-NO-CLIPPING
-See SDF (type)")
-
-  (function pop-clip
-    "Pop a clipping SDF from the stack.
-
-If no corresponding push operation happened first, an error is
-signalled.
-
-See PUSH-CLIP
-See CLIP
-See WITH-CLIP
-See WITH-NO-CLIPPING")
 
   (function with-clip
     "Narrow the clipping region during BODY by SDF.
 
 See WITH-NO-CLIPPING
-See PUSH-CLIP
-See POP-CLIP
 See CLIP
 See SDF (type)
 See WITH-RECT-CLIP")

@@ -5,32 +5,27 @@
   (declare (ignore nx ny))
   most-negative-single-float)
 
-(defvar *clip-stack* (list #'no-clip))
+(declaim (type sdf *clip*))
+(defvar *clip* #'no-clip)
 
 (defun clip (sdf)
-  (intersect (first *clip-stack*) sdf))
-
-(defun push-clip (sdf)
-  (let ((prev (first *clip-stack*)))
-    (push (intersect prev sdf) *clip-stack*)
-    (first *clip-stack*)))
-
-(defun pop-clip ()
-  (unless *clip-stack*
-    (error "Clip stack is empty."))
-  (pop *clip-stack*)
-  (first *clip-stack*))
+  (intersect *clip* sdf))
 
 (defmacro with-clip (sdf &body body)
-  `(let ((*clip-stack* (list* (intersect ,sdf (first *clip-stack*)))))
-     ,@body))
+  (let ((prev (gensym "PREV"))
+        (next (gensym "NEXT")))
+    `(let* ((,prev (the sdf *clip*))
+            (,next (with-sdf () (max (funcall (the sdf ,sdf) nx ny) (funcall ,prev nx ny))))
+            (*clip* ,next))
+       (declare (dynamic-extent ,next))
+       ,@body)))
 
 (defmacro with-rect-clip ((x y w h) &body body)
   `(with-clip (rectangle ,x ,y ,w ,h)
      ,@body))
 
 (defmacro with-no-clipping (&body body)
-  `(let ((*clip-stack* (list #'no-clip)))
+  `(let ((*clip* #'no-clip))
      ,@body))
 
 (defmacro define-sdf-draw (name args &body body)

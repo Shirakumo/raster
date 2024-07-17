@@ -31,8 +31,6 @@
   ;; raster.lisp
   (:export
    #:clip
-   #:push-clip
-   #:pop-clip
    #:with-clip
    #:with-rect-clip
    #:with-no-clipping
