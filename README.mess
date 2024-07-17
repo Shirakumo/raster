@@ -16,6 +16,27 @@ We'll assume the package ``org.shirakumo.raster`` is nicknamed to ``raster``. Yo
 
 This will return the completed ``image`` into which the shapes were drawn. Please see the respective functions for all available options.
 
+In order to render to a PNG for instance, you could use the zpng library:
+
+:: common lisp
+(defun write-buffer (buffer width height file &optional (format :rgba))
+  (let ((buffer (raster:convert-from-buffer buffer width height format)))
+    (zpng:write-png (make-instance 'zpng:png :image-data buffer :width width :height height :color-type
+                                   (ecase format
+                                     (:rgba :truecolor-alpha)
+                                     (:rgb :truecolor)
+                                     (:ra :grayscale-alpha)
+                                     (:r :grayscale)))
+                    file)))
+
+(defun write-image (image file &optional (format :rgba))
+  (write-buffer (raster:image-buffer image) (raster:image-width image) (raster:image-height image) file format))
+
+(write-image (raster:with-drawing (100 100)
+               (raster:draw-line 10 10 90 90))
+             #p"~/test.png")
+::
+
 ## Compositing and Sampling
 Most ``draw-*`` calls are relatively simple wrappers over ``composite-sdf``. Sometimes though it can be too expensive to perform raster operations via SDFs. In this case you may want to either draw pixels directly yourself via ``color-ref`` and ``color-ref*``, or at least handle the compositing of different buffers and samplers.
 
