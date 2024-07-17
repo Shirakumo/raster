@@ -200,3 +200,18 @@
     (funcall sdf
              (+ (* (aref mat 0) nx) (* (aref mat 1) ny) (aref mat 2))
              (+ (* (aref mat 3) nx) (* (aref mat 4) ny) (aref mat 5) ))))
+
+(declaim (ftype (function (sdf coordinate coordinate &optional coordinate) single-float) dsdf))
+(defun dsdf (sdf x y &optional (step 1f0))
+  (declare (type sdf sdf))
+  (declare (type coordinate x y step))
+  (let ((sdf-0 (funcall sdf x y))
+        (sdf-x- (funcall sdf (- x step) y))
+        (sdf-x+ (funcall sdf (+ x step) y))
+        (sdf-y- (funcall sdf x (- y step)))
+        (sdf-y+ (funcall sdf x (+ y step))))
+    (* (+ (abs (- sdf-0 sdf-x-))
+          (abs (- sdf-x+ sdf-0))
+          (abs (- sdf-0 sdf-y-))
+          (abs (- sdf-y+ sdf-0)))
+       0.25)))

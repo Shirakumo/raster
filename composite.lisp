@@ -60,6 +60,7 @@
   (declare (optimize speed (safety 1)))
   ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
   (let* ((feather (float (or feather 0) 0f0))
+         (ox (- (min 0 tx))) (oy (- (min 0 tx)))
          (tx (max 0 tx)) (ty (max 0 ty))
          (ti (* 4 (the (unsigned-byte 32) (+ tx (* ty tw)))))
          (rows (min h (- sh sy) (- th ty)))
@@ -67,17 +68,10 @@
     (declare (type index sw sh tx ty tw th w h ti rows cols))
     (loop for j from 0 below rows
           do (loop for i from 0 below cols
-                   do (let* ((x (coordinate (+ j sx)))
-                             (y (coordinate (+ i sy)))
+                   do (let* ((x (coordinate (+ j sx ox)))
+                             (y (coordinate (+ i sy oy)))
                              (sdf-0 (funcall sdf x y))
-                             ;; compute local derivative
-                             (sdf-x- (funcall sdf (- x 1) y))
-                             (sdf-x+ (funcall sdf (+ x 1) y))
-                             (sdf-y- (funcall sdf x (- y 1)))
-                             (sdf-y+ (funcall sdf x (+ y 1)))
-                             (dsdf (+ (abs (- sdf-x- sdf-x+)) (abs (- sdf-y- sdf-y+))))
-                             ;; compute smooth alpha value
-                             (dsdf (* 0.5 dsdf (1+ feather)))
+                             (dsdf (* 0.5 (dsdf sdf x y) (1+ feather)))
                              (sdf (if (/= 0 dsdf) (clamp (/ (- sdf-0 dsdf) (* dsdf -2)) 0f0 1f0) 0f0))
                              (sdf (* sdf sdf (- 3 (* 2 sdf)))))
                         (when (<= 0 sdf)
