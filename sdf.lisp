@@ -57,7 +57,7 @@
 (defun ellipse (x y w h &key (start 0) (end (* 2 PI)) (inner-radius 0.0))
   (let* ((w (* 0.5f0 (coordinate w))) (h (* 0.5f0 (coordinate h)))
          (x (+ (coordinate x) w)) (y (+ (coordinate y) h))
-         (ir (* 0.5 (/ (- w (coordinate inner-radius)) w)))
+         (ir (* 0.5 (- w (coordinate inner-radius))))
          (start (coordinate start)) (end (coordinate end)))
     (cond ((and (<= (* 2 PI) (- end start)) (= w h))
            ;; Ring case

@@ -60,7 +60,9 @@
   (declare (optimize speed (safety 1)))
   ;; FIXME: we can be much smarter here to fill the sdf more efficiently than stepping every pixel
   (let* ((feather (float (or feather 0) 0f0))
-         (ox (- (min 0 tx))) (oy (- (min 0 tx)))
+         ;; We offset the SDF by half a pixel to get proper centering.
+         ;; We also need to offset to account for truncation into the target's bounds.
+         (ox (- 0.5 (min 0 tx))) (oy (- 0.5 (min 0 tx)))
          (tx (max 0 tx)) (ty (max 0 ty))
          (ti (* 4 (the (unsigned-byte 32) (+ tx (* ty tw)))))
          (rows (min h (- sh sy) (- th ty)))
