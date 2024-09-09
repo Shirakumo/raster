@@ -71,11 +71,12 @@
               (setf y- (min y- y)) (setf y+ (max y+ y))))
   (x x-) (y y-) (w (- x+ x-)) (h (- y+ y-)))
 
-(defun draw-image (image x y buffer bw bh &key transform)
+(defun draw-image (image x y buffer bw bh &key (w (image-width image)) (h (image-height image)) (sizing :fit) (valign :middle) (halign :middle) transform)
   ;; FIXME: Pretty sure this does not interact correctly between TRANSFORM and CLIP and so on besides being horribly inefficient.
-  (let ((sampler (sampler (image-buffer image) (image-width image) (image-height image) :transform transform)))
+  (let ((sampler (sampler (image-buffer image) (image-width image) (image-height image) :transform transform))
+        (sx 0) (sy 0))
     (composite-sdf sampler (first *clip-stack*) (image-width image) (image-height image) buffer bw bh
-                   :tx x :ty y)))
+                   :sx sx :sy sy :tx x :ty y :w w :h h)))
 
 (defun draw-lines (points buffer bw bh &key sampler (line-width 1) feather line-style join-style cap-style)
   ;; TODO: implement draw-lines
