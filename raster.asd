@@ -4,9 +4,9 @@
   :author "Yukari Hafner <shinmera@tymoon.eu>"
   :maintainer "Yukari Hafner <shinmera@tymoon.eu>"
   :description "A library for software rasterisation"
-  :homepage "https://shirakumo.github.io/raster/"
-  :bug-tracker "https://github.com/shirakumo/raster/issues"
-  :source-control (:git "https://github.com/shirakumo/raster.git")
+  :homepage "https://shirakumo.org/docs/raster/"
+  :bug-tracker "https://shirakumo.org/project/raster/issues"
+  :source-control (:git "https://shirakumo.org/project/raster.git")
   :serial T
   :components ((:file "package")
                (:file "buffer")
@@ -25,9 +25,9 @@
   :author "Yukari Hafner <shinmera@tymoon.eu>"
   :maintainer "Yukari Hafner <shinmera@tymoon.eu>"
   :description "Tests for the raster system."
-  :homepage "https://shirakumo.github.io/raster/"
-  :bug-tracker "https://github.com/shirakumo/raster/issues"
-  :source-control (:git "https://github.com/shirakumo/raster.git")
+  :homepage "https://shirakumo.org/docs/raster/"
+  :bug-tracker "https://shirakumo.org/project/raster/issues"
+  :source-control (:git "https://shirakumo.org/project/raster.git")
   :serial T
   :components ((:file "test"))
   :depends-on (:raster :parachute :pngload :zpng)
